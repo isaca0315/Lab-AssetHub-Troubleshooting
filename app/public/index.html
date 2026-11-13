@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AssetHub</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="/favicon.svg" alt="" width="30" height="30">
+      <div class="brand-text">
+        <span class="brand-name">AssetHub</span>
+        <span class="brand-sub">Repositorio de archivos</span>
+      </div>
+    </div>
+    <div class="service" id="service">
+      <span class="dot" id="service-dot"></span>
+      <span id="service-label">Comprobando servicio</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h1>Subir archivo</h1>
+      <p class="muted">El archivo se guarda en el almacenamiento de objetos y queda registrado en la base de datos.</p>
+
+      <form id="upload-form">
+        <label class="dropzone" id="dropzone" for="file">
+          <svg class="dz-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 16V4m0 0L8 8m4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <span class="dz-title">Arrastrá un archivo o hacé clic para elegirlo</span>
+          <span class="dz-hint" id="file-name">Tamaño máximo 512 MB</span>
+          <input id="file" name="file" type="file" required>
+        </label>
+
+        <div class="upload-actions">
+          <button type="submit" id="submit" disabled>Subir</button>
+          <div class="progress" id="progress" hidden>
+            <div class="progress-bar" id="progress-bar"></div>
+          </div>
+        </div>
+      </form>
+
+      <p class="feedback" id="feedback" role="status" aria-live="polite" hidden></p>
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <h2>Archivos recientes</h2>
+        <button type="button" class="ghost" id="refresh">Actualizar</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Archivo</th>
+              <th scope="col">Tamaño</th>
+              <th scope="col">Subido</th>
+            </tr>
+          </thead>
+          <tbody id="files"></tbody>
+        </table>
+        <p class="empty" id="empty" hidden></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>AssetHub · v1.4.2</footer>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>
