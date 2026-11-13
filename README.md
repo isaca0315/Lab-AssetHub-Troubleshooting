@@ -1,13 +1,13 @@
 # AssetHub
 
-Aplicación de tres servicios orquestada con Docker Compose: una interfaz web con
-API en Node.js, almacenamiento de objetos compatible con S3 (Garage) y PostgreSQL
-15 para los metadatos.
+AssetHub es una aplicación de tres servicios orquestada con Docker Compose: una
+interfaz web con API en Node.js, almacenamiento de objetos compatible con S3
+(Garage) y PostgreSQL 15 para los metadatos.
 
-El entorno arranca con **tres fallas** que aparecen en momentos distintos. Tu
-trabajo es reproducirlas, encontrar la causa con las herramientas del entorno y
-dejarlas corregidas. El enunciado completo, los criterios de aceptación y las
-preguntas para la defensa están en [`GUIA_ESTUDIANTE.md`](GUIA_ESTUDIANTE.md).
+El entorno arranca con tres fallas que aparecen en momentos distintos. Vas a
+reproducirlas, encontrar la causa con las herramientas del entorno y dejarlas
+corregidas. El enunciado completo, los criterios de aceptación y las preguntas
+para la defensa están en [`GUIA_ESTUDIANTE.md`](GUIA_ESTUDIANTE.md).
 
 ## Requisitos
 
@@ -24,8 +24,8 @@ docker compose ps
 docker compose logs -f app
 ```
 
-Esperá a que los servicios figuren como `healthy` o `Up`. El primer arranque
-puede tardar por la descarga de imágenes. La interfaz queda en
+Espera a que los servicios figuren como `healthy` o `Up`. El primer arranque
+puede tardar mientras se descargan las imágenes. La interfaz queda en
 <http://localhost:3000>.
 
 ```bash
@@ -51,8 +51,8 @@ Los puertos publicados escuchan solo en `127.0.0.1`.
 | `/files` | GET | últimos 50 registros de metadatos |
 | `/upload` | POST | subida `multipart/form-data` con el campo `file` |
 
-La interfaz usa los mismos endpoints, así que cualquier falla del backend también
-aparece en pantalla.
+La interfaz llama a esos mismos endpoints, así que una falla del backend se ve
+también en pantalla.
 
 ## Comandos útiles
 

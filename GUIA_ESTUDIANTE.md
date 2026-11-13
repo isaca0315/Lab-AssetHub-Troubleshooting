@@ -4,11 +4,11 @@
 
 Vas a levantar AssetHub, una aplicación de tres servicios con Docker Compose. El
 entorno arranca con tres fallas que aparecen en momentos distintos: una al subir
-un archivo, otra al consultar los metadatos y otra después de varias subidas. Tu
-trabajo es reproducir cada falla, encontrar la causa con las herramientas del
-entorno y dejarla corregida.
+un archivo, otra al consultar los metadatos y otra después de varias subidas.
+Vas a reproducir cada falla, encontrar la causa con las herramientas del entorno
+y dejarla corregida.
 
-Cada corrección necesita evidencia. No alcanza con decir qué cambiaste: tenés que
+Cada corrección necesita evidencia. No alcanza con decir qué cambiaste: tienes que
 mostrar el comando que usaste, la salida que viste y la prueba de que el problema
 desapareció.
 
@@ -26,18 +26,17 @@ Al terminar el laboratorio deberías poder:
 
 ## Antes de empezar
 
-- Tenés Docker Engine con Compose v2, `curl` y un navegador para probar la
+- Tienes Docker Engine con Compose v2, `curl` y un navegador para probar la
   interfaz.
-- Necesitás alrededor de 1 GB libre para las imágenes y los archivos de prueba.
-- Trabajá sobre una copia del laboratorio. No edites archivos antes de reproducir
+- Necesitas alrededor de 1 GB libre para las imágenes y los archivos de prueba.
+- Trabaja sobre una copia del laboratorio. No edites archivos antes de reproducir
   cada falla: primero se observa, después se corrige.
-- Guardá las salidas completas, no solo la última línea. Una captura sin el
+- Guarda las salidas completas, no solo la última línea. Una captura sin el
   comando visible no sirve como evidencia.
 - Los puertos publicados escuchan solo en `127.0.0.1`. El resto de la red no
   llega al laboratorio.
 - La interfaz muestra los errores en pantalla, pero la evidencia del informe debe
-  incluir la salida de los comandos y los logs. Una captura del navegador sola no
-  alcanza.
+  incluir la salida de los comandos y los logs.
 
 ## Servicios
 
@@ -70,25 +69,25 @@ lados.
 
 ## Puesta en marcha
 
-Ubicate en la carpeta del laboratorio y levantá el stack:
+Ubícate en la carpeta del laboratorio y levanta el stack:
 
 ```bash
 docker compose up -d --build
 docker compose ps
 ```
 
-Esperá a que los tres servicios figuren como `healthy` o `Up`. El primer arranque
-puede tardar por la descarga de imágenes y la creación de la base.
+Espera a que los tres servicios figuren como `healthy` o `Up`. El primer arranque
+puede tardar mientras se descargan las imágenes y se crea la base.
 
 ```bash
 curl -s http://localhost:3000/health
 ```
 
 La respuesta muestra el estado de la conexión a la base y el endpoint S3 que la
-aplicación tiene configurado. Guardala como punto de partida.
+aplicación tiene configurado. Guárdala como punto de partida.
 
 La interfaz está en `http://localhost:3000` y usa los mismos endpoints, así que
-podés reproducir cada incidente desde el navegador o con `curl`.
+puedes reproducir cada incidente desde el navegador o con `curl`.
 
 Para seguir los logs mientras repetís una prueba:
 
@@ -110,7 +109,7 @@ printf 'archivo de prueba\n' > /tmp/prueba.txt
 curl -i -F "file=@/tmp/prueba.txt" http://localhost:3000/upload
 ```
 
-También podés subir el archivo desde la interfaz. El mensaje de error aparece
+También puedes subir el archivo desde la interfaz. El mensaje de error aparece
 debajo del formulario, con la misma información que devuelve la API.
 
 ![Error de subida en la interfaz de AssetHub](docs/img/incidente-1-subida.png)
@@ -134,6 +133,9 @@ docker port assethub-storage
 docker compose exec garage /garage status
 ```
 
+`docker port` muestra los puertos publicados. `garage status` da el estado del
+nodo, no el puerto de la API S3.
+
 ### Preguntas para la defensa
 
 - ¿A qué host y puerto intenta conectarse la aplicación?
@@ -146,8 +148,11 @@ docker compose exec garage /garage status
 ### Criterio de aceptación
 
 La misma subida responde `201` y el objeto queda guardado en el almacenamiento.
-En el informe explicá qué variable o archivo cambiaste y cómo comprobaste que el
+En el informe explica qué variable o archivo cambiaste y cómo comprobaste que el
 contenedor tomó el valor nuevo.
+
+Para comprobar el objeto, `docker compose exec garage /garage bucket info uploads`
+muestra el tamaño y la cantidad de objetos del bucket.
 
 ## Incidente 2: los metadatos no se guardan
 
@@ -163,7 +168,7 @@ base de datos.
 curl -i http://localhost:3000/files
 ```
 
-Si abrís la interfaz, la tabla de archivos muestra el mismo error con el texto
+Si abres la interfaz, la tabla de archivos muestra el mismo error con el texto
 `No se pudo cargar la lista`.
 
 ![Error al cargar la lista de archivos en la interfaz](docs/img/incidente-2-listado.png)
@@ -202,7 +207,7 @@ docker compose exec postgres psql -U app -d assethub -c "SELECT to_regclass('pub
 ### Criterio de aceptación
 
 `GET /files` responde `200` y una subida nueva devuelve `201` con su registro en
-la base. En el informe explicá qué cambiaste, por qué elegiste ese camino y qué
+la base. En el informe explica qué cambiaste, por qué elegiste ese camino y qué
 evita que el problema vuelva a aparecer en el próximo despliegue.
 
 ## Incidente 3: las subidas grandes llenan el disco
@@ -215,7 +220,7 @@ healthcheck puede seguir respondiendo bien.
 
 ### Reproducción
 
-Generá un archivo de 12 MB y subilo varias veces:
+Genera un archivo de 12 MB y súbelo varias veces:
 
 ```bash
 dd if=/dev/zero of=/tmp/pesado.bin bs=1M count=12
@@ -227,7 +232,7 @@ done
 
 La falla se puede ver incluso si los incidentes anteriores siguen abiertos: el
 archivo temporal se escribe antes de llegar al almacenamiento o a la base. Desde
-la interfaz podés repetir la subida del mismo archivo para ver el error en
+la interfaz puedes repetir la subida del mismo archivo para ver el error en
 pantalla, pero el diagnóstico real está en los logs y en el uso del disco.
 
 ![Error de subida después de llenar el espacio temporal](docs/img/incidente-3-disco.png)
@@ -249,7 +254,7 @@ docker compose exec app df -h /data/uploads
 docker compose exec app ls -lh /data/uploads
 docker compose exec app sh -c 'du -sh /data/uploads/* 2>/dev/null'
 docker compose logs app --tail 20
-docker inspect "$(docker compose ps -q app)" --format 'Running={{.State.Running}} OOMKilled={{.State.OOMKilled}} ExitCode={{.State.ExitCode}}'
+docker inspect "$(docker compose ps -q app)" --format 'Running={{.State.Running}} OOMKilled={{.State.OOMKilled}} ExitCode={{.State.ExitCode}} RestartCount={{.RestartCount}}'
 docker compose exec app sh -c 'ls -l /proc/1/fd 2>/dev/null | grep deleted'
 ```
 
@@ -266,7 +271,7 @@ docker compose exec app sh -c 'ls -l /proc/1/fd 2>/dev/null | grep deleted'
 
 Con los incidentes anteriores resueltos, cinco subidas de 12 MB responden `201`,
 el uso del disco se mantiene bajo y el directorio de temporales queda vacío
-después de cada subida. En el informe mostrá la verificación y explicá qué
+después de cada subida. En el informe muestra la verificación y explica qué
 cambiaste y por qué eso evita que el problema se repita.
 
 ## Entregable
@@ -304,6 +309,10 @@ solución y su justificación quedan a tu cargo.
 - `df` muestra el espacio del filesystem; `du` suma archivos visibles. Si no
   coinciden, puede haber archivos borrados con un descriptor abierto.
 - El límite de tamaño de una subida no protege al disco por sí solo.
+- El temporal lo escribe la aplicación, no Docker. Si la corrección toca
+  `app/server.js`, la imagen se reconstruye con `docker compose up -d --build app`.
+- La aplicación crea su tabla al arrancar. Después de mover datos entre tablas,
+  revisa con `\dt` qué queda tras reiniciar el servicio.
 - Un healthcheck que solo consulta la base no detecta fallas de almacenamiento ni
   de disco.
 
@@ -318,13 +327,13 @@ solución y su justificación quedan a tu cargo.
 
 ## Limpieza
 
-Al terminar, apagá el stack y borrá sus volúmenes:
+Al terminar, apaga el stack y borra sus volúmenes:
 
 ```bash
 docker compose down -v
 ```
 
 Eso elimina la base, los datos del almacenamiento y la red del laboratorio. Los
-archivos del proyecto no se modifican. Si necesitás repetir la práctica desde el
-estado inicial, pedile al docente que restaure los archivos de configuración y
+archivos del proyecto no se modifican. Si necesitas repetir la práctica desde el
+estado inicial, pídele al docente que restaure los archivos de configuración y
 código.
